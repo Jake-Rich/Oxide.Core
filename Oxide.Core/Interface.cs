@@ -54,13 +54,19 @@ namespace Oxide.Core
             return CallDeprecatedHook(oldHook, newHook, expireDate, args);
         }
 
+        public static ulong HookCalls = 0;
+
         /// <summary>
         /// Calls the specified hook
         /// </summary>
         /// <param name="hook"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static object CallHook(string hook, object[] args) => Oxide?.CallHook(hook, args);
+        public static object CallHook(string hook, object[] args)
+        {
+            HookCalls++;
+            return Oxide?.CallHook(hook, args);
+        }
 
         //Using params creates a new object array every single time
         //This leads to 5k-10k+ new object arrays each second

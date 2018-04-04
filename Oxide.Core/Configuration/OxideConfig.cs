@@ -18,6 +18,7 @@ namespace Oxide.Core.Configuration
         {
             public bool Modded;
             public DefaultGroups DefaultGroups;
+            public float GarbageCollectionWarning = 0.5f;
         }
 
         [JsonObject]

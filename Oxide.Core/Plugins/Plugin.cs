@@ -133,7 +133,7 @@ namespace Oxide.Core.Plugins
         private Stopwatch trackStopwatch = new Stopwatch();
         private Stopwatch stopwatch = new Stopwatch();
         //private float trackStartAt;
-        private float averageAt;
+        private double averageAt;
         private double sum;
         private int preHookGcCount;
 
@@ -221,7 +221,7 @@ namespace Oxide.Core.Plugins
         /// <returns></returns>
         public object CallHook(string hook, params object[] args)
         {
-            var startedAt = 0f;
+            var startedAt = 0d;
             if (!IsCorePlugin && nestcount == 0)
             {
                 preHookGcCount = GC.CollectionCount(0);
@@ -248,9 +248,14 @@ namespace Oxide.Core.Plugins
                 {
                     stopwatch.Stop();
                     var duration = stopwatch.Elapsed.TotalSeconds;
-                    if (duration > 0.5)
+                    if (duration > 0.01)
                     {
-                        var suffix = preHookGcCount == GC.CollectionCount(0) ? string.Empty : " [GARBAGE COLLECT]";
+                        bool hasGCed = preHookGcCount != GC.CollectionCount(0);
+                        var suffix = !hasGCed ? string.Empty : $" [GARBAGE COLLECT] (Hook Calls: {Interface.HookCalls})";
+                        if (hasGCed)
+                        {
+                            Interface.HookCalls = 0;
+                        }
                         Interface.Oxide.LogWarning($"Calling '{hook}' on '{Name} v{Version}' took {duration * 1000:0}ms{suffix}");
                     }
                     stopwatch.Reset();
@@ -261,7 +266,12 @@ namespace Oxide.Core.Plugins
                         total /= endedAt - averageAt;
                         if (total > 0.5)
                         {
-                            var suffix = preHookGcCount == GC.CollectionCount(0) ? string.Empty : " [GARBAGE COLLECT]";
+                            bool hasGCed = preHookGcCount != GC.CollectionCount(0);
+                            var suffix = !hasGCed ? string.Empty : $" [GARBAGE COLLECT] (Hook Calls: {Interface.HookCalls})";
+                            if (hasGCed)
+                            {
+                                Interface.HookCalls = 0;
+                            }
                             Interface.Oxide.LogWarning($"Calling '{hook}' on '{Name} v{Version}' took average {sum * 1000:0}ms{suffix}");
                         }
                         sum = 0;
@@ -310,22 +320,20 @@ namespace Oxide.Core.Plugins
         {
             if (IsCorePlugin || nestcount > 0) return;
 
-            var stopwatch = trackStopwatch;
-            if (stopwatch.IsRunning) return;
+            if (trackStopwatch.IsRunning) return;
 
-            stopwatch.Start();
+            trackStopwatch.Start();
         }
 
         public void TrackEnd()
         {
             if (IsCorePlugin || nestcount > 0) return;
 
-            var stopwatch = trackStopwatch;
-            if (!stopwatch.IsRunning) return;
+            if (!trackStopwatch.IsRunning) return;
 
-            stopwatch.Stop();
-            TotalHookTime += stopwatch.Elapsed.TotalSeconds;
-            stopwatch.Reset();
+            trackStopwatch.Stop();
+            TotalHookTime += trackStopwatch.Elapsed.TotalSeconds;
+            trackStopwatch.Reset();
         }
 
         #region Config
