@@ -27,6 +27,11 @@
     <PackageReference Include="Oxide.References" Version="2.0.*" />
     <Compile Remove="Commands.cs" /> <!-- Remove when ready -->
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Data.SQLite">
+      <HintPath>Dependencies\System.Data.SQLite.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
     <ItemGroup>

@@ -222,6 +222,7 @@ namespace Oxide.Core
             extensionManager.RegisterLibrary("Lang", new Lang());
             extensionManager.RegisterLibrary("Permission", new Permission());
             extensionManager.RegisterLibrary("Plugins", new Libraries.Plugins(RootPluginManager));
+            extensionManager.RegisterLibrary("SQLite", new Libraries.SQLite());
             extensionManager.RegisterLibrary("Time", new Time());
             extensionManager.RegisterLibrary("Timer", libtimer = new Timer());
             extensionManager.RegisterLibrary("WebRequests", new WebRequests());
