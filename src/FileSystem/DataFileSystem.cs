@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Oxide.Core.FileSystem;
+using System.Reflection;
 
 namespace Oxide.Core
 {
@@ -92,6 +94,32 @@ namespace Oxide.Core
         }
 
         /// <summary>
+        /// Get names of files
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="searchPattern"></param>
+        /// <returns></returns>
+        public string[] GetFilesWithoutExtension(string path = "", string searchPattern = "*")
+        {
+            var files = GetFiles(path, searchPattern);
+            for(int i = 0; i < files.Length; i++)
+            {
+                files[i] = Path.GetFileNameWithoutExtension(files[i]);
+            }
+            return files;
+        }
+
+        /// <summary>
+        /// Gets folders in the data directory plus path, with optional search pattern
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public string[] GetDirectories(string path = "", string searchPattern = "*")
+        {
+            return System.IO.Directory.GetDirectories(Path.Combine("Directory", path), searchPattern);
+        }
+
+        /// <summary>
         /// Saves the specified datafile
         /// </summary>
         /// <param name="name"></param>
@@ -125,6 +153,35 @@ namespace Oxide.Core
             {
                 callback?.Invoke(file.ReadObject<T>());
             }
+        }
+
+        private Dictionary<Type, List<DataObjectField>> _cachedDataObjectFields = new Dictionary<Type, List<DataObjectField>>();
+
+        private struct DataObjectField
+        {
+            public FieldInfo FieldInfo;
+            public Type type;
+            public bool Folder;
+            public string Name;
+        }
+
+        public T GetDataObject<T>(string path, string name) where T : INamedDataObject
+        {
+            var fields = GetDataObjectFields<T>();
+            var data = ReadObject<T>(Path.Combine(path, name));
+            foreach(var field in fields)
+            {
+                field.FieldInfo.SetValue(data, GetDataObject()
+            }
+        }
+
+        private List<DataObjectField> GetDataObjectFields<T>()
+        {
+            if (!_cachedDataObjectFields.TryGetValue(typeof(T), out var list))
+            {
+                list = new List<DataObjectField>();
+            }
+            return null;
         }
     }
 }
