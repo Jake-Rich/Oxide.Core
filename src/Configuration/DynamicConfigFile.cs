@@ -64,6 +64,27 @@ namespace Oxide.Core.Configuration
         }
 
         /// <summary>
+        /// Loads this config from the specified file
+        /// </summary>
+        /// <param name="filename"></param>
+        public object ReadObject(Type type, string filename = null)
+        {
+            filename = CheckPath(filename ?? Filename);
+            object customObject;
+            if (Exists(filename))
+            {
+                string source = File.ReadAllText(filename);
+                customObject = JsonConvert.DeserializeObject(source, type, Settings);
+            }
+            else
+            {
+                customObject = Activator.CreateInstance(type);
+                WriteObject(customObject, false, filename);
+            }
+            return customObject;
+        }
+
+        /// <summary>
         /// Saves this config to the specified file
         /// </summary>
         /// <param name="filename"></param>

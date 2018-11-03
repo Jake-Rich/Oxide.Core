@@ -8,6 +8,6 @@ namespace Oxide.Core.FileSystem
 {
     public interface INamedDataObject
     {
-        string FileName { get; set; }
+        string Name { get; set; }
     }
 }

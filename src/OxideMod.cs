@@ -472,6 +472,8 @@ namespace Oxide.Core
                     }
                 }
                 plugin.IsLoaded = true;
+                //Make sure the DataObject folder is created on load
+                DataFileSystem.OnPluginLoaded(plugin);
                 CallHook("OnPluginLoaded", plugin);
                 LogInfo("Loaded plugin {0} v{1} by {2}", plugin.Title, plugin.Version, plugin.Author);
                 return true;
@@ -504,6 +506,9 @@ namespace Oxide.Core
             // Let the plugin loader know that this plugin is being unloaded
             PluginLoader loader = extensionManager.GetPluginLoaders().SingleOrDefault(l => l.LoadedPlugins.ContainsKey(name));
             loader?.Unloading(plugin);
+
+            //Cleanup the types we cache for GetDataObject
+            DataFileSystem.OnPluginUnloaded(plugin);
 
             // Unload it
             RootPluginManager.RemovePlugin(plugin);

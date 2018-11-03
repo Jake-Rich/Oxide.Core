@@ -74,6 +74,11 @@ namespace Oxide.Core.Plugins
         public PluginManager Manager { get; private set; }
 
         /// <summary>
+        /// Gets the data file system (shortcut to accessing interface)
+        /// </summary>
+        public DataFileSystem DataFileSystem { get { return Interface.Oxide.DataFileSystem; } }
+
+        /// <summary>
         /// Gets if this plugin has a config file or not
         /// </summary>
         public bool HasConfig { get; protected set; }
