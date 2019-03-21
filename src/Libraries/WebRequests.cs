@@ -391,7 +391,7 @@ namespace uMod.Libraries
                         Interface.uMod.LogException(message, ex);
                     }
 
-                    Owner?.TrackEnd();
+                    Owner?.TrackEnd("Worker Thread");
                     Owner = null;
                 });
             }

@@ -136,6 +136,11 @@ namespace uMod.Plugins
         /// <value>The total hook time.</value>
         public double TotalHookTime { get; internal set; }
 
+        /// <summary>
+        /// Stores the amount of time spent executing each individual hook in a plugin
+        /// </summary>
+        public Dictionary<string, double> IndividualHookTime { get; internal set; }
+
         // Used to measure time spent in this plugin
         private Stopwatch trackStopwatch = new Stopwatch();
         private Stopwatch stopwatch = new Stopwatch();
@@ -271,7 +276,7 @@ namespace uMod.Plugins
             finally
             {
                 nestcount--;
-                TrackEnd();
+                TrackEnd(hook);
                 if (startedAt > 0)
                 {
                     stopwatch.Stop();
@@ -338,24 +343,31 @@ namespace uMod.Plugins
         {
             if (!IsCorePlugin && nestcount <= 0)
             {
-                Stopwatch stopwatch = trackStopwatch;
-                if (!stopwatch.IsRunning)
+                if (!trackStopwatch.IsRunning)
                 {
-                    stopwatch.Start();
+                    trackStopwatch.Start();
                 }
             }
         }
 
-        public void TrackEnd()
+        public void TrackEnd(string hookName)
         {
             if (!IsCorePlugin && nestcount <= 0)
             {
-                Stopwatch stopwatch = trackStopwatch;
-                if (stopwatch.IsRunning)
+                if (trackStopwatch.IsRunning)
                 {
-                    stopwatch.Stop();
-                    TotalHookTime += stopwatch.Elapsed.TotalSeconds;
-                    stopwatch.Reset();
+                    trackStopwatch.Stop();
+                    double timeTaken = trackStopwatch.Elapsed.TotalSeconds;
+                    TotalHookTime += timeTaken;
+                    if (IndividualHookTime.TryGetValue(hookName, out var time))
+                    {
+                        IndividualHookTime[hookName] = time + timeTaken;
+                    }
+                    else
+                    {
+                        IndividualHookTime[hookName] = timeTaken;
+                    }
+                    trackStopwatch.Reset();
                 }
             }
         }

@@ -349,7 +349,7 @@ namespace uMod.Libraries
                 }
                 finally
                 {
-                    Owner?.TrackEnd();
+                    Owner?.TrackEnd("Timer");
                 }
             }
 
