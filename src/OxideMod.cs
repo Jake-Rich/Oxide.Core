@@ -133,6 +133,14 @@ namespace Oxide.Core
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings { Culture = CultureInfo.InvariantCulture };
             CommandLine = new CommandLine(Environment.GetCommandLineArgs());
 
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+            {
+                string fileName = new AssemblyName(args.Name).Name + ".dll";
+                string assemblyPath = Path.Combine(Path.Combine(Path.Combine(RootDirectory, "RustDedicated_Data"), "Managed"), fileName);
+                var assembly = Assembly.LoadFile(assemblyPath);
+                return assembly;
+            };
+
             if (CommandLine.HasVariable("oxide.directory"))
             {
                 string var, format;
