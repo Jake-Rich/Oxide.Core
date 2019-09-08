@@ -88,6 +88,8 @@ namespace uMod
         private CSharpPluginLoader pluginLoader;
 
         // Various libraries
+        private Covalence covalence;
+
         private Universal universal;
         private Permission libperm;
         private Timer libtimer;
@@ -97,6 +99,7 @@ namespace uMod
 
         // Thread safe NextTick callback queue
         private List<Action> nextTickQueue = new List<Action>();
+
         private List<Action> lastTickQueue = new List<Action>();
         private readonly object nextTickLock = new object();
 

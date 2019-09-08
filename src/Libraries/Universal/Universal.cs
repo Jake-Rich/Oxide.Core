@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Oxide.Core.Logging;
+using Oxide.Core.Plugins;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -6,7 +8,7 @@ using System.Text;
 using uMod.Logging;
 using uMod.Plugins;
 
-namespace uMod.Libraries.Covalence
+namespace Oxide.Core.Libraries.Covalence
 {
     [Obsolete("Use Universal instead")]
     public class Covalence : Universal.Universal

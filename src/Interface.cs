@@ -329,5 +329,13 @@ namespace uMod
         /// <param name="args"></param>
         /// <returns></returns>
         public static T Call<T>(string hook, params object[] args) => (T)Convert.ChangeType(CallHook(hook, args), typeof(T));
+
+        /// <summary>
+        /// Gets the Oxide mod
+        /// </summary>
+        /// <returns></returns>
+        public static OxideMod GetMod() => Oxide;
+
+        public static OxideMod uMod => Oxide;
     }
 }

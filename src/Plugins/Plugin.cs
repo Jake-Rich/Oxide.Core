@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -436,7 +436,11 @@ namespace uMod.Plugins
 
         #region Universal
 
-        [Obsolete("Use AddUniversalCommand instead")]
+        public void AddUniversalCommand(string command, string callback, string perm = null)
+        {
+            AddCovalenceCommand(new[] { command }, callback, string.IsNullOrEmpty(perm) ? null : new[] { perm });
+        }
+
         public void AddCovalenceCommand(string command, string callback, string perm = null)
         {
             AddUniversalCommand(command, callback, perm);
@@ -447,7 +451,11 @@ namespace uMod.Plugins
             AddUniversalCommand(new[] { command }, callback, string.IsNullOrEmpty(perm) ? null : new[] { perm });
         }
 
-        [Obsolete("Use AddUniversalCommand instead")]
+        public void AddUniversalCommand(string[] commands, string callback, string perm)
+        {
+            AddCovalenceCommand(commands, callback, string.IsNullOrEmpty(perm) ? null : new[] { perm });
+        }
+
         public void AddCovalenceCommand(string[] commands, string callback, string perm)
         {
             AddUniversalCommand(commands, callback, perm);
@@ -458,7 +466,11 @@ namespace uMod.Plugins
             AddUniversalCommand(commands, callback, string.IsNullOrEmpty(perm) ? null : new[] { perm });
         }
 
-        [Obsolete("Use AddUniversalCommand instead")]
+        public void AddUniversalCommand(string[] commands, string callback, string[] perms = null)
+        {
+            AddCovalenceCommand(commands, callback, perms);
+        }
+
         public void AddCovalenceCommand(string[] commands, string callback, string[] perms = null)
         {
             AddUniversalCommand(commands, callback, perms);
@@ -479,7 +491,11 @@ namespace uMod.Plugins
             }
         }
 
-        [Obsolete("Use AddUniversalCommand instead")]
+        protected void AddUniversalCommand(string[] commands, string[] perms, CommandCallback callback)
+        {
+            AddCovalenceCommand(commands, perms, callback);
+        }
+
         protected void AddCovalenceCommand(string[] commands, string[] perms, CommandCallback callback)
         {
             AddUniversalCommand(commands, perms, callback);
