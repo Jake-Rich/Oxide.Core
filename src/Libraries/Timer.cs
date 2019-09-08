@@ -353,7 +353,7 @@ namespace Oxide.Core.Libraries
                 }
                 finally
                 {
-                    Owner?.TrackEnd();
+                    Owner?.TrackEnd("Timer");
                 }
             }
 

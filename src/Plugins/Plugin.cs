@@ -136,10 +136,20 @@ namespace Oxide.Core.Plugins
         public bool IsLoaded { get; internal set; }
 
         /// <summary>
+        /// Time the plugin was loaded in UTC time
+        /// </summary>
+        public DateTime TimeLoaded { get; internal set; }
+
+        /// <summary>
         /// Gets or sets the total hook time
         /// </summary>
         /// <value>The total hook time.</value>
         public double TotalHookTime { get; internal set; }
+
+        /// <summary>
+        /// Stores the amount of time spent executing each individual hook in a plugin
+        /// </summary>
+        public Dictionary<string, double> IndividualHookTime { get; internal set; }
 
         // Used to measure time spent in this plugin
         private Stopwatch trackStopwatch = new Stopwatch();
@@ -270,7 +280,7 @@ namespace Oxide.Core.Plugins
             finally
             {
                 nestcount--;
-                TrackEnd();
+                TrackEnd(hook);
                 if (startedAt > 0)
                 {
                     stopwatch.Stop();
@@ -340,31 +350,32 @@ namespace Oxide.Core.Plugins
                 return;
             }
 
-            Stopwatch stopwatch = trackStopwatch;
-            if (stopwatch.IsRunning)
-            {
-                return;
-            }
-
-            stopwatch.Start();
+            //Checks if it was running in Start()
+            trackStopwatch.Start();
         }
 
-        public void TrackEnd()
+        public void TrackEnd(string hookName)
         {
             if (IsCorePlugin || nestcount > 0)
             {
                 return;
             }
 
-            Stopwatch stopwatch = trackStopwatch;
-            if (!stopwatch.IsRunning)
+            if ( trackStopwatch.IsRunning )
             {
-                return;
+                trackStopwatch.Stop();
+                double timeTaken = trackStopwatch.Elapsed.TotalSeconds;
+                TotalHookTime += timeTaken;
+                if ( IndividualHookTime.TryGetValue( hookName, out var time ) )
+                {
+                    IndividualHookTime[hookName] = time + timeTaken;
+                }
+                else
+                {
+                    IndividualHookTime[hookName] = timeTaken;
+                }
+                trackStopwatch.Reset();
             }
-
-            stopwatch.Stop();
-            TotalHookTime += stopwatch.Elapsed.TotalSeconds;
-            stopwatch.Reset();
         }
 
         #region Config

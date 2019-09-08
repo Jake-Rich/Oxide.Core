@@ -475,6 +475,7 @@ namespace Oxide.Core
                     }
                 }
                 plugin.IsLoaded = true;
+                plugin.TimeLoaded = DateTime.UtcNow;
                 CallHook("OnPluginLoaded", plugin);
                 LogInfo("Loaded plugin {0} v{1} by {2}", plugin.Title, plugin.Version, plugin.Author);
                 return true;

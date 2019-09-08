@@ -302,7 +302,7 @@ namespace Oxide.Core.Libraries
 
                         Interface.Oxide.LogException(message, ex);
                     }
-                    Owner?.TrackEnd();
+                    Owner?.TrackEnd( "WebRequest Worker Thread" );
                     Owner = null;
                 });
             }
